@@ -3,6 +3,7 @@ package astiav
 //#cgo pkg-config: libavcodec libavutil
 //#include <libavcodec/avcodec.h>
 //#include <libavutil/frame.h>
+//#include <libavutil/opt.h>
 import "C"
 
 // https://github.com/FFmpeg/FFmpeg/blob/n5.0/libavcodec/avcodec.h#L383
@@ -211,6 +212,11 @@ func (cc *CodecContext) ThreadType() ThreadType {
 
 func (cc *CodecContext) SetThreadType(t ThreadType) {
 	cc.c.thread_type = C.int(t)
+}
+
+func (cc *CodecContext) SetOpt(name string, val string, search_flags int) {
+	// int av_opt_set         (void *obj, const char *name, const char *val, int search_flags);
+	C.av_opt_set(cc.c.priv_data, C.CString(name), C.CString(val), C.int(search_flags))
 }
 
 func (cc *CodecContext) Width() int {
